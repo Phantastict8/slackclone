@@ -4,7 +4,7 @@ import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import { sidebarItemsData } from '../data/SidebarData';
 import AddIcon from '@material-ui/icons/Add';
 
-function Sidebar() {
+function Sidebar(props) {
     return (
         <Container>
             <WorkspaceContainer>
@@ -27,9 +27,17 @@ function Sidebar() {
                     <div>Channels</div>
                     <AddIcon />
                 </NewChannelContainer>
+
                 <ChannelsList>
-                    <Channel># Channel 1</Channel>
-                    <Channel># Channel 2</Channel>
+                    {
+                        props.rooms.map(item => (
+                            <Channel>
+                                # {item.name}
+                            </Channel>
+                        ))
+                    }
+
+                    
                 </ChannelsList>
             </ChannelsContainter>
         </Container>
@@ -82,7 +90,7 @@ const MainChannelItem = styled.div`
     cursor: pointer;
 
     :hover {
-        background: #350D36;
+        background: #350d36;
     }
 `;
 
@@ -100,9 +108,7 @@ const NewChannelContainer = styled.div`
     padding-right: 12px;
 `;
 
-const ChannelsList = styled.div`
-
-`;
+const ChannelsList = styled.div``;
 
 const Channel = styled.div`
     height: 28px;
@@ -112,6 +118,6 @@ const Channel = styled.div`
     cursor: pointer;
 
     :hover {
-        background: #350D36;
+        background: #350d36;
     }
 `;
