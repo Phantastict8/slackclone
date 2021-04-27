@@ -7,10 +7,12 @@ import styled from 'styled-components';
 import Header from './components/Header';
 import Sidebar from './components/Sidebar';
 import db from './firebase';
+// import { ContactsOutlined } from '@material-ui/icons';
+import { auth, provider } from './firebase';
 
 function App() {
     const [rooms, setRooms] = useState([]);
-    const [user, setUser] = useState();
+    const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
 
     const getChannels = () => {
         db.collection('rooms').onSnapshot(snapshot => {
@@ -22,6 +24,13 @@ function App() {
         });
     };
 
+    const signOut = () => {
+        auth.signOut().then(() => {
+            localStorage.removeItem('user');
+            setUser(null);
+        })
+    }
+
     useEffect(() => {
         getChannels();
     }, []);
@@ -29,25 +38,21 @@ function App() {
     return (
         <div className="App">
             <Router>
-                {
-                !user ? 
-                    <Login />
-                 : 
+                {!user ? (
+                    <Login setUser={setUser} />
+                ) : (
                     <Container>
-                        <Header />
+                        <Header signOut={signOut} user={user} />
                         <Main>
                             <Sidebar rooms={rooms} />
                             <Switch>
                                 <Route path="/room">
                                     <Chat />
                                 </Route>
-                                <Route path="/">
-                                    <Login />
-                                </Route>
                             </Switch>
                         </Main>
                     </Container>
-                }
+                )}
             </Router>
         </div>
     );
