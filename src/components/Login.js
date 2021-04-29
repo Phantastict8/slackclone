@@ -21,7 +21,7 @@ function Login(props) {
     return (
         <Container>
             <Content>
-                <SlackImg src="http://assets.stickpng.com/images/5cb480cd5f1b6d3fbadece79.png" />
+                <SlackImg src="https://cdn.mos.cms.futurecdn.net/SDDw7CnuoUGax6x9mTo7dd-970-80.jpg.webp" />
                 <h1>Sign in Slack</h1>
                 <SignInButton onClick={() => signIn()}>
                     Sign In With Google
@@ -38,7 +38,7 @@ const Container = styled.div`
     height: 100vh;
     background-color: #f8f8f8;
     display: flex;
-    justiy-content: center;
+    justify-content: center;
     align-items: center;
 `;
 
