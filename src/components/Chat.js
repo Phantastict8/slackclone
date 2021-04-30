@@ -5,10 +5,39 @@ import ChatInput from './ChatInput';
 import ChatMessage from './ChatMessage';
 import db from '../firebase';
 import { useParams } from 'react-router-dom';
+import userEvent from '@testing-library/user-event';
+import firebase from 'firebase';
 
-function Chat() {
+function Chat({ user }) {
     let { channelId } = useParams();
     const [channel, setChannel] = useState();
+    const [messages, setMessages] = useState([]);
+
+    const getMessages = () => {
+        db.collection('room')
+            .doc(channelId)
+            .collection('messages')
+            .orderBy('timestamp', 'asc')
+            .onSnapshot(snapshot => {
+                let messages = snapshot.docs.map(doc => doc.data());
+                setMessages(messages);
+            });
+    };
+
+    const sendMessage = text => {
+        if (channelId) {
+            let payload = {
+                text: text,
+                timestamp: firebase.firestore.Timestamp.now(),
+                user: user.name,
+                userImage: user.photo
+            };
+            db.collection('rooms')
+                .doc(channelId)
+                .collection('messages')
+                .add(payload);
+        }
+    };
 
     const getChannel = () => {
         db.collection('rooms')
@@ -20,13 +49,14 @@ function Chat() {
 
     useEffect(() => {
         getChannel();
+        getMessages();
     }, [channelId]);
 
     return (
         <Container>
             <Header>
                 <Channel>
-                    <ChannelName># {channel.name}</ChannelName>
+                    <ChannelName># {channel && channel.name}</ChannelName>
                     <ChannelInfo>
                         Company-wide announcements and work-based matters
                     </ChannelInfo>
@@ -37,11 +67,18 @@ function Chat() {
                     <Info />
                 </ChannelDetails>
             </Header>
-
             <MessageContainer>
-                <ChatMessage />
+                {messages.length > 0 &&
+                    messages.map((data, index) => (
+                        <ChatMessage
+                            text={data.text}
+                            name={data.user}
+                            image={data.userImage}
+                            timestamp={data.timestamp}
+                        />
+                    ))}
             </MessageContainer>
-            <ChatInput />
+            <ChatInput sendMessage={sendMessage} />
         </Container>
     );
 }
