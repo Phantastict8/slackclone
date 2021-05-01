@@ -88,6 +88,7 @@ export default Chat;
 const Container = styled.div`
     display: grid;
     grid-template-rows: 64px auto min-content;
+    min-height: 0;
 `;
 
 const Channel = styled.div``;
@@ -122,4 +123,8 @@ const Header = styled.div`
     justify-content: space-between;
 `;
 
-const MessageContainer = styled.div``;
+const MessageContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    overflow-y: scroll;
+`;
